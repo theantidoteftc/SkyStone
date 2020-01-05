@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import java.util.Arrays;
-
 public class Drivetrain {
 
     double motorfR = 0; //motor power variables
@@ -12,8 +10,8 @@ public class Drivetrain {
     public void driveRobotcentric(double forwardPower, double strafePower, double turningPower) {
         motorfR = -forwardPower - strafePower - turningPower; //robotcentric
         motorfL = -forwardPower + strafePower + turningPower;
-        motorrR = forwardPower + strafePower - turningPower;
-        motorrL = forwardPower - strafePower + turningPower;
+        motorrR = -forwardPower + strafePower - turningPower;
+        motorrL = -forwardPower - strafePower + turningPower;
     }
 
     public double getMotorfR() {

@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -109,6 +110,7 @@ public class TeleOp extends OpMode //steve
         fL.setDirection(DcMotor.Direction.REVERSE);
         rL.setDirection(DcMotor.Direction.REVERSE);
         intakeLeft.setDirection(DcMotor.Direction.REVERSE);
+        liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -149,6 +151,7 @@ public class TeleOp extends OpMode //steve
         //IMPORTANT STEVEN CODE
         myDrivetrain.driveRobotcentric(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
         myIntake.intake(gamepad1.left_trigger, gamepad1.right_trigger);
+        myLift.lift(gamepad2.left_trigger, gamepad2.right_trigger);
 
         //IMPORTANT STEVEN CODE
         fR.setPower(myDrivetrain.getMotorfR());
@@ -159,30 +162,35 @@ public class TeleOp extends OpMode //steve
         intakeLeft.setPower(myIntake.getIntakeLeft());
         intakeRight.setPower(myIntake.getIntakeRight());
 
+        liftLeft.setPower(myLift.getLiftLeft());
+        liftRight.setPower(myLift.getLiftRight());
+
         if (gamepad1.a) {
-            grabberLeft.setPosition(0);
-            grabberRight.setPosition(1);
-        }
-        if (gamepad1.b) {
             grabberLeft.setPosition(1);
             grabberRight.setPosition(0);
         }
+        if (gamepad1.b) {
+            grabberLeft.setPosition(0);
+            grabberRight.setPosition(1);
+        }
 
         if (gamepad2.dpad_up) {
-            swivel.setPosition(0.12);
-        }
-        if (gamepad2.dpad_down) {
-            swivel.setPosition(0.88); //0.88
-        }
-        if (gamepad2.a) {
-            gripper.setPosition(1); //close
-        }
-        if (gamepad2.b) { //open
+            swivel.setPosition(0.30);
             gripper.setPosition(0);
         }
-
-        liftLeft.setPower(gamepad2.right_trigger-gamepad2.left_trigger);
-        liftRight.setPower(-gamepad2.right_trigger+gamepad2.left_trigger);
+        if (gamepad2.dpad_right) {
+            swivel.setPosition(0.37); //.4
+            gripper.setPosition(1);
+        }
+        if (gamepad2.dpad_down) {
+            swivel.setPosition(0.85); //0.88
+        }
+        if (gamepad2.a) {
+            gripper.setPosition(0); //close
+        }
+        if (gamepad2.b) { //open
+            gripper.setPosition(1);
+        }
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());

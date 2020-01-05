@@ -5,7 +5,7 @@ public class Lift {
     double liftLeft = 0; //intake power variables
     double liftRight = 0;
 
-    public void intake(double upwardPower, double downwardPower) {
+    public void lift(double upwardPower, double downwardPower) {
         liftLeft = upwardPower - downwardPower;
         liftRight = upwardPower - downwardPower;
     }
