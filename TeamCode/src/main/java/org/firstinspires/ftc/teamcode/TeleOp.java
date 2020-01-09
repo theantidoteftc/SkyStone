@@ -131,6 +131,9 @@ public class TeleOp extends OpMode //steve
 
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver .class, "blinkin");
 
+        grabberLeft.setPosition(0);
+        grabberRight.setPosition(1);
+
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
     }
@@ -172,10 +175,10 @@ public class TeleOp extends OpMode //steve
 
         //IMPORTANT STEVEN CODE
         if (dtSlow) {
-            fR.setPower(myDrivetrain.getMotorfR()/2);
-            fL.setPower(myDrivetrain.getMotorfL()/2);
-            rR.setPower(myDrivetrain.getMotorrR()/2);
-            rL.setPower(myDrivetrain.getMotorrL()/2);
+            fR.setPower(myDrivetrain.getMotorfR()*0.4);
+            fL.setPower(myDrivetrain.getMotorfL()*0.4);
+            rR.setPower(myDrivetrain.getMotorrR()*0.4);
+            rL.setPower(myDrivetrain.getMotorrL()*0.4);
         } else {
             fR.setPower(myDrivetrain.getMotorfR());
             fL.setPower(myDrivetrain.getMotorfL());
@@ -211,15 +214,15 @@ public class TeleOp extends OpMode //steve
         }
 
         if (gamepad2.dpad_up) {
-            swivel.setPosition(0.125);
+            swivel.setPosition(0.05);
             gripper.setPosition(0);
         }
         if (gamepad2.dpad_right) {
-            swivel.setPosition(0.37); //.4
+            swivel.setPosition(0.30); //.4
             gripper.setPosition(1);
         }
         if (gamepad2.dpad_down) {
-            swivel.setPosition(0.90); //0.88
+            swivel.setPosition(.7); //0.88
         }
         if (gamepad2.dpad_left) {
             swivel.setPosition(1);

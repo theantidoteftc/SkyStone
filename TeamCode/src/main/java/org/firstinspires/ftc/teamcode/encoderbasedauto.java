@@ -103,21 +103,64 @@ public class encoderbasedauto extends LinearOpMode {
 
         sleep(1000);
 
-        telemetryStrafe(0.3,1500,5);
-        telemetryDrive(0.4,-750,5);
-        telemetryStrafe(0.4,6000,5);
-        robot.intakeLeft.setPower(0.75);
-        robot.intakeRight.setPower(0.75);
+        telemetryStrafe(0.35,1500,5);
+        telemetryDrive(0.45,-750,5);
+        telemetryStrafe(0.45,6000,5);
+        robot.intakeLeft.setPower(0.8);
+        robot.intakeRight.setPower(0.8);
         telemetryDrive(0.3,1250,5);
+        sleep(750);
+        robot.intakeLeft.setPower(0);
+        robot.intakeRight.setPower(0);
+        robot.swivel.setPosition(0.05);
+        sleep(250);
+        robot.gripper.setPosition(0);
+        telemetryStrafe(0.45,-2600,5);
+        //telemetryTurn(0.2,-30,2);
+        telemetryDrive(0.60,-14500,10);
+        sleep(250);
+        telemetryTurn(0.3,-2200,5);
+        telemetryDrive(0.3,-1625,5);
+        robot.grabberLeft.setPosition(1);
+        robot.grabberRight.setPosition(0);
+        sleep(1000);
+        telemetryDrive(0.4,2500,5);
+        telemetryTurn(0.8,3425,5);
+        telemetryDrive(0.6,-2250,2);
+        robot.swivel.setPosition(1);
+        sleep(1000);
+        robot.gripper.setPosition(1);
+        sleep(200);
+        robot.swivel.setPosition(0.05);
+        robot.grabberLeft.setPosition(0);
+        robot.grabberRight.setPosition(1);
+        //telemetryStrafe(0.6,200,4);
+        telemetryStrafe(0.5,1250,3);
+        telemetryTurn(0.125,-25,2);
+        telemetryDrive(0.3,7000,5);
+        /*telemetryDrive(0.8,16250,7);
+        sleep(250);
+        telemetryStrafe(0.6,3000,5);
+        robot.swivel.setPosition(0.37);
+        robot.intakeLeft.setPower(0.8);
+        robot.intakeRight.setPower(0.8);
+        telemetryDrive(0.2,1000,5);
         sleep(750);
         robot.intakeLeft.setPower(0);
         robot.intakeRight.setPower(0);
         robot.swivel.setPosition(0.175);
         sleep(250);
         robot.gripper.setPosition(0);
-        telemetryStrafe(0.3,-3000,5);
-        telemetryDrive(0.6,-15750,10);
-        telemetryTurn(0.3,-4000,5);
+        telemetryStrafe(0.45,-1900,5);
+        telemetryDrive(0.65,-13000,5);
+        robot.swivel.setPosition(1);
+        sleep(1000);
+        robot.gripper.setPosition(1);
+        sleep(1000);
+        robot.swivel.setPosition(0.175);
+        telemetryDrive(0.25,3000,4);*/
+
+        sleep(2000);
 
 
         /*telemetryDrive(0.25,4500,5);
@@ -163,9 +206,6 @@ public class encoderbasedauto extends LinearOpMode {
         telemetry.addData("Vertical Average", robot.getVerticalAverage());
         telemetry.addData("Strafe", robot.getStrafe());
         telemetry.update();
-        sleep(5000);
-        //telemetryDrive(0.4,2000,2);
-
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
