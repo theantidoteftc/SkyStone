@@ -31,7 +31,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //STEVEN'S CODE (written 11/15/19) goodfaithday
@@ -77,6 +79,8 @@ public class OverflowHardware
     public Servo grabberLeft = null;
     public Servo grabberRight = null;
     public Servo intakeLock = null;
+    public ServoImplEx swivel = null;
+    public Servo gripper = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -104,6 +108,9 @@ public class OverflowHardware
         grabberLeft = hwMap.get(Servo.class, "grabberLeft");
         grabberRight = hwMap.get(Servo.class, "grabberRight");
         intakeLock = hwMap.get(Servo.class, "intakeLock");
+        swivel = hwMap.get(ServoImplEx.class, "swivel");
+        swivel.setPwmRange(new PwmControl.PwmRange(500.0, 2500.0, 1000000.0/333.0));
+        gripper = hwMap.get(Servo.class, "gripper");
 
         fL.setDirection(DcMotor.Direction.REVERSE);
         rL.setDirection(DcMotor.Direction.REVERSE);
@@ -196,7 +203,7 @@ public class OverflowHardware
     }
 
     public int getStrafe() {
-        return rL.getCurrentPosition(); //1
+        return -rR.getCurrentPosition(); //1
     }
 
 }

@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -69,12 +70,17 @@ public class TeleOp extends OpMode //steve
     public ServoImplEx swivel = null;
     public Servo gripper = null;
 
+    RevBlinkinLedDriver blinkinLedDriver;
+
     Drivetrain myDrivetrain = new Drivetrain();
     Intake myIntake = new Intake();
     Lift myLift = new Lift();
 
     private boolean toggleSwitch = false;
     private boolean grabbersDown = false;
+
+    private boolean dtSlow = false;
+    private boolean slideSlow = false;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -112,6 +118,8 @@ public class TeleOp extends OpMode //steve
         intakeLeft.setDirection(DcMotor.Direction.REVERSE);
         liftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -120,6 +128,8 @@ public class TeleOp extends OpMode //steve
         intakeRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver .class, "blinkin");
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -153,17 +163,43 @@ public class TeleOp extends OpMode //steve
         myIntake.intake(gamepad1.left_trigger, gamepad1.right_trigger);
         myLift.lift(gamepad2.left_trigger, gamepad2.right_trigger);
 
+        if (gamepad1.x) {
+            dtSlow = true;
+        }
+        if (gamepad1.y) {
+            dtSlow = false;
+        }
+
         //IMPORTANT STEVEN CODE
-        fR.setPower(myDrivetrain.getMotorfR());
-        fL.setPower(myDrivetrain.getMotorfL());
-        rR.setPower(myDrivetrain.getMotorrR());
-        rL.setPower(myDrivetrain.getMotorrL());
+        if (dtSlow) {
+            fR.setPower(myDrivetrain.getMotorfR()/2);
+            fL.setPower(myDrivetrain.getMotorfL()/2);
+            rR.setPower(myDrivetrain.getMotorrR()/2);
+            rL.setPower(myDrivetrain.getMotorrL()/2);
+        } else {
+            fR.setPower(myDrivetrain.getMotorfR());
+            fL.setPower(myDrivetrain.getMotorfL());
+            rR.setPower(myDrivetrain.getMotorrR());
+            rL.setPower(myDrivetrain.getMotorrL());
+        }
 
         intakeLeft.setPower(myIntake.getIntakeLeft());
         intakeRight.setPower(myIntake.getIntakeRight());
 
-        liftLeft.setPower(myLift.getLiftLeft());
-        liftRight.setPower(myLift.getLiftRight());
+        if (gamepad2.x) {
+            slideSlow = true;
+        }
+        if (gamepad2.y) {
+            slideSlow = false;
+        }
+
+        if (slideSlow || (liftLeft.getCurrentPosition() < -1300)) {
+            liftLeft.setPower(myLift.getLiftLeft()*0.75);
+            liftRight.setPower(myLift.getLiftRight()*0.75);
+        } else {
+            liftLeft.setPower(myLift.getLiftLeft());
+            liftRight.setPower(myLift.getLiftRight());
+        }
 
         if (gamepad1.a) {
             grabberLeft.setPosition(1);
@@ -175,7 +211,7 @@ public class TeleOp extends OpMode //steve
         }
 
         if (gamepad2.dpad_up) {
-            swivel.setPosition(0.30);
+            swivel.setPosition(0.125);
             gripper.setPosition(0);
         }
         if (gamepad2.dpad_right) {
@@ -183,8 +219,12 @@ public class TeleOp extends OpMode //steve
             gripper.setPosition(1);
         }
         if (gamepad2.dpad_down) {
-            swivel.setPosition(0.85); //0.88
+            swivel.setPosition(0.90); //0.88
         }
+        if (gamepad2.dpad_left) {
+            swivel.setPosition(1);
+        }
+
         if (gamepad2.a) {
             gripper.setPosition(0); //close
         }
@@ -192,15 +232,23 @@ public class TeleOp extends OpMode //steve
             gripper.setPosition(1);
         }
 
+        if (gamepad1.left_bumper) {
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_GOLD);
+        } else if (gamepad1.right_bumper) {
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.STROBE_RED);
+        } else {
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.CP1_2_SINELON);
+        }
+
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "fR (%.2f), fL (%.2f), rR (%.2f), rL (%.2f)",
+        /*telemetry.addData("Motors", "fR (%.2f), fL (%.2f), rR (%.2f), rL (%.2f)",
                 fR.getPower(), fL.getPower(), rR.getPower(), rL.getPower());
         telemetry.addData("Intake", "iL (%.2f), iR (%.2f)",
                 intakeLeft.getPower(), intakeRight.getPower());
-        telemetry.addData("grabbersDown", grabbersDown);
-        telemetry.addData("grabberLeftPos", grabberLeft.getPosition());
-        telemetry.addData("grabberRightPos", grabberRight.getPosition());
+        telemetry.addData("grabbersDown", grabbersDown);*/
+        telemetry.addData("slide position", liftLeft.getCurrentPosition());
+        telemetry.addData("slide slow mode", slideSlow);
     }
 
     /*

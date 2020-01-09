@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
@@ -92,6 +93,9 @@ public class encoderbasedauto extends LinearOpMode {
 
         robot.intakeLock.setPosition(1);
 
+        robot.swivel.setPosition(0.37); //.4
+        robot.gripper.setPosition(1);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
@@ -99,7 +103,24 @@ public class encoderbasedauto extends LinearOpMode {
 
         sleep(1000);
 
-        telemetryDrive(0.25,4500,5);
+        telemetryStrafe(0.3,1500,5);
+        telemetryDrive(0.4,-750,5);
+        telemetryStrafe(0.4,6000,5);
+        robot.intakeLeft.setPower(0.75);
+        robot.intakeRight.setPower(0.75);
+        telemetryDrive(0.3,1250,5);
+        sleep(750);
+        robot.intakeLeft.setPower(0);
+        robot.intakeRight.setPower(0);
+        robot.swivel.setPosition(0.175);
+        sleep(250);
+        robot.gripper.setPosition(0);
+        telemetryStrafe(0.3,-3000,5);
+        telemetryDrive(0.6,-15750,10);
+        telemetryTurn(0.3,-4000,5);
+
+
+        /*telemetryDrive(0.25,4500,5);
         sleep(150);
         telemetryTurn(0.25,-1250,5);
         sleep(150);
@@ -136,7 +157,7 @@ public class encoderbasedauto extends LinearOpMode {
         telemetryDrive(0.25,500,5);
         sleep(200);
         robot.intakeLeft.setPower(0);
-        robot.intakeRight.setPower(0);
+        robot.intakeRight.setPower(0);*/
 
 
         telemetry.addData("Vertical Average", robot.getVerticalAverage());
@@ -272,9 +293,9 @@ public class encoderbasedauto extends LinearOpMode {
                 // reset the timeout time and start motion.
                 runtime.reset();
                 robot.fR.setPower(speed); //1
-                robot.fL.setPower(0.8*speed); //1
-                robot.rR.setPower(-speed); //1
-                robot.rL.setPower(-speed); //1
+                robot.fL.setPower(speed); //1
+                robot.rR.setPower(speed); //1
+                robot.rL.setPower(speed); //1
 
                 while (opModeIsActive() &&
                         (runtime.seconds() < timeoutS) && ((int)robot.getVerticalAverage() < newVerticalEncoderTarget)) {
@@ -292,9 +313,9 @@ public class encoderbasedauto extends LinearOpMode {
                 // reset the timeout time and start motion.
                 runtime.reset();
                 robot.fR.setPower(-speed);
-                robot.fL.setPower(0.8*-speed);
-                robot.rR.setPower(speed);
-                robot.rL.setPower(speed);
+                robot.fL.setPower(-speed);
+                robot.rR.setPower(-speed);
+                robot.rL.setPower(-speed);
 
                 while (opModeIsActive() &&
                         (runtime.seconds() < timeoutS) && ((int)robot.getVerticalAverage() > newVerticalEncoderTarget)) {

@@ -26,7 +26,7 @@ public class S4T extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("s4tright (fR)", robot.fR.getCurrentPosition());
             telemetry.addData("s4tleft (fL)", robot.fL.getCurrentPosition());
-            telemetry.addData("s4tstrafe (rL)", robot.rL.getCurrentPosition());
+            telemetry.addData("s4tstrafe (rL)", -robot.rR.getCurrentPosition());
 
             telemetry.addData("OpMode", "running!");
             telemetry.update();
