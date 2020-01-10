@@ -37,6 +37,9 @@ import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -65,12 +68,17 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="encoderbasedauto", group="encoderbasedauto")
+@Autonomous(name="encoderbasedauto - red", group="encoderbasedauto")
 public class encoderbasedauto extends LinearOpMode {
 
     /* Declare OpMode members. */
     OverflowHardware robot = new OverflowHardware();
     private ElapsedTime     runtime = new ElapsedTime();
+
+    private OpenCvInternalCamera phoneCam;
+    private SkyDetector skyDetector;
+
+    private int key = -1;
 
     @Override
     public void runOpMode() {
@@ -93,51 +101,176 @@ public class encoderbasedauto extends LinearOpMode {
 
         robot.intakeLock.setPosition(1);
 
-        robot.swivel.setPosition(0.37); //.4
-        robot.gripper.setPosition(1);
+        //robot.swivel.setPosition(0.37); //.4
+        robot.swivel.setPosition(0.05);
+        robot.gripper.setPosition(0);
+
+        //------------------------------------------------------------------------------------------
+        // CAMERA INITIALIZATION
+        //------------------------------------------------------------------------------------------
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+
+        phoneCam.openCameraDevice();
+
+        skyDetector = new SkyDetector();
+        phoneCam.setPipeline(skyDetector);
+
+        phoneCam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.setZoom(15);
+
+        //------------------------------------------------------------------------------------------
+
+        telemetry.addData("KEY CONFIRMED", true);
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        runtime.reset();
+
+        while (runtime.seconds() < 3) {
+            if (skyDetector.getScreenPosition() < 80 && skyDetector.getScreenPosition() > 10) {
+                key = 1;
+            } else if (skyDetector.getScreenPosition() >= 80 && skyDetector.getScreenPosition() <= 180) {
+                key = 2;
+            } else if (skyDetector.getScreenPosition() > 180) {
+                key = 3;
+            }
+
+            telemetry.addData("screen position", skyDetector.getScreenPosition());
+            telemetry.addData("Current Key", key);
+            telemetry.update();
+        }
+
         robot.intakeLock.setPosition(0);
-
-        sleep(1000);
-
-        telemetryStrafe(0.35,1500,5);
-        telemetryDrive(0.45,-750,5);
-        telemetryStrafe(0.45,6000,5);
-        robot.intakeLeft.setPower(0.8);
-        robot.intakeRight.setPower(0.8);
-        telemetryDrive(0.3,1250,5);
-        sleep(750);
-        robot.intakeLeft.setPower(0);
-        robot.intakeRight.setPower(0);
-        robot.swivel.setPosition(0.05);
-        sleep(250);
-        robot.gripper.setPosition(0);
-        telemetryStrafe(0.45,-2600,5);
-        //telemetryTurn(0.2,-30,2);
-        telemetryDrive(0.60,-14500,10);
-        sleep(250);
-        telemetryTurn(0.3,-2200,5);
-        telemetryDrive(0.3,-1625,5);
-        robot.grabberLeft.setPosition(1);
-        robot.grabberRight.setPosition(0);
-        sleep(1000);
-        telemetryDrive(0.4,2500,5);
-        telemetryTurn(0.8,3425,5);
-        telemetryDrive(0.6,-2250,2);
-        robot.swivel.setPosition(1);
-        sleep(1000);
         robot.gripper.setPosition(1);
-        sleep(200);
-        robot.swivel.setPosition(0.05);
-        robot.grabberLeft.setPosition(0);
-        robot.grabberRight.setPosition(1);
-        //telemetryStrafe(0.6,200,4);
-        telemetryStrafe(0.5,1250,3);
-        telemetryTurn(0.125,-25,2);
-        telemetryDrive(0.3,7000,5);
+
+        sleep(1000);
+
+        if (key == 1) {
+            robot.swivel.setPosition(0.37);
+            sleep(1000);
+
+            telemetryStrafe(0.35,1500,5);
+            telemetryDrive(0.45,-750,5);
+            telemetryStrafe(0.45,6000,5);
+            robot.intakeLeft.setPower(0.8);
+            robot.intakeRight.setPower(0.8);
+            telemetryDrive(0.3,1250,5);
+            sleep(750);
+            robot.intakeLeft.setPower(0);
+            robot.intakeRight.setPower(0);
+            robot.swivel.setPosition(0.05);
+            sleep(250);
+            robot.gripper.setPosition(0);
+            telemetryStrafe(0.45,-2600,5);
+            //telemetryTurn(0.2,-30,2);
+            telemetryDrive(0.60,-14500,10);
+            sleep(250);
+            telemetryTurn(0.3,-2200,5);
+            telemetryDrive(0.3,-1625,5);
+            robot.grabberLeft.setPosition(1);
+            robot.grabberRight.setPosition(0);
+            sleep(1000);
+            telemetryDrive(0.4,2500,5);
+            telemetryTurn(0.8,3425,5);
+            telemetryDrive(0.6,-2250,2);
+            robot.swivel.setPosition(1);
+            sleep(1000);
+            robot.gripper.setPosition(1);
+            sleep(200);
+            robot.swivel.setPosition(0.05);
+            robot.grabberLeft.setPosition(0);
+            robot.grabberRight.setPosition(1);
+            //telemetryStrafe(0.6,200,4);
+            telemetryStrafe(0.5,1250,3);
+            telemetryTurn(0.125,-25,2);
+            telemetryDrive(0.3,7000,5);
+        } else if (key == 2) {
+            robot.swivel.setPosition(0.37);
+            sleep(1000);
+
+            telemetryStrafe(0.35,1500,5);
+            sleep(50);
+            telemetryDrive(0.25,-2400,5);
+            telemetryStrafe(0.45,6000,5);
+            robot.intakeLeft.setPower(0.8);
+            robot.intakeRight.setPower(0.8);
+            telemetryDrive(0.3,1250,5);
+            sleep(750);
+            robot.intakeLeft.setPower(0);
+            robot.intakeRight.setPower(0);
+            robot.swivel.setPosition(0.05);
+            sleep(250);
+            robot.gripper.setPosition(0);
+            telemetryStrafe(0.45,-2600,5);
+            //telemetryTurn(0.2,-30,2);
+            telemetryDrive(0.60,-12850,10);
+            sleep(250);
+            telemetryTurn(0.3,-2200,5);
+            telemetryDrive(0.3,-1625,5);
+            robot.grabberLeft.setPosition(1);
+            robot.grabberRight.setPosition(0);
+            sleep(1000);
+            telemetryDrive(0.4,2500,5);
+            telemetryTurn(0.8,3425,5);
+            telemetryDrive(0.6,-2250,2);
+            robot.swivel.setPosition(1);
+            sleep(1000);
+            robot.gripper.setPosition(1);
+            sleep(200);
+            robot.swivel.setPosition(0.05);
+            robot.grabberLeft.setPosition(0);
+            robot.grabberRight.setPosition(1);
+            //telemetryStrafe(0.6,200,4);
+            telemetryStrafe(0.5,750,3);
+            telemetryTurn(0.125,-25,2);
+            telemetryDrive(0.3,7000,5);
+        } else if (key == 3) {
+            telemetryStrafe(0.4,4100,5);
+            sleep(50);
+            telemetryDrive(0.35,-4600,5);
+            telemetryTurn(0.35,1425,5);
+            telemetryDrive(0.35,1250,5);
+            telemetryStrafe(0.3,150,5);
+            robot.swivel.setPosition(0.37);
+            sleep(100);
+            robot.intakeLeft.setPower(.8);
+            robot.intakeRight.setPower(.8);
+            telemetryDrive(0.3,1500,5);
+            sleep(750);
+            robot.intakeLeft.setPower(0);
+            robot.intakeRight.setPower(0);
+            robot.swivel.setPosition(0.05);
+            sleep(250);
+            robot.gripper.setPosition(0);
+            telemetryStrafe(0.3,-200,5);
+            telemetryDrive(0.4,-2400,5);
+            telemetryTurn(0.35,-1750,5);
+            telemetryDrive(0.60,-8500,10);
+            sleep(250);
+            telemetryTurn(0.35,-2100,5);
+            telemetryDrive(0.45,-1625,5);
+            robot.grabberLeft.setPosition(1);
+            robot.grabberRight.setPosition(0);
+            sleep(1000);
+            telemetryDrive(0.4,2750,5);
+            telemetryTurn(0.8,3425,5);
+            telemetryDrive(0.6,-2250,2);
+            robot.swivel.setPosition(1);
+            sleep(1000);
+            robot.gripper.setPosition(1);
+            sleep(200);
+            robot.swivel.setPosition(0.05);
+            robot.grabberLeft.setPosition(0);
+            robot.grabberRight.setPosition(1);
+            telemetryStrafe(0.5,1100,3);
+            telemetryTurn(0.125,-50,2);
+            telemetryDrive(0.3,7000,5);
+        }
+
         /*telemetryDrive(0.8,16250,7);
         sleep(250);
         telemetryStrafe(0.6,3000,5);

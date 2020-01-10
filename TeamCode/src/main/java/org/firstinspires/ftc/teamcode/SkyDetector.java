@@ -54,7 +54,7 @@ public class SkyDetector extends DogeCVDetector {
 
     @Override
     public Mat process(Mat input) {
-        input = input.submat(0, input.rows(), input.cols() * (2/3), input.cols() / 3);
+        input = input.submat(0, input.rows(), input.cols() * (2/3), input.cols() / 3/* 0, 150*/);
 
         input.copyTo(rawImage);
         input.copyTo(workingMat);
@@ -146,6 +146,16 @@ public class SkyDetector extends DogeCVDetector {
 
     public double getScreenPosition() {
         return ((bestRect.tl().y + bestRect.br().y)) / 2;
+    }
+
+    public void determineKey(int keyVar) {
+        if (getScreenPosition() < 60) {
+            keyVar = 1;
+        } else if (getScreenPosition() >= 60 && getScreenPosition() <= 180) {
+            keyVar = 2;
+        } else if (getScreenPosition() > 180) {
+            keyVar = 3;
+        }
     }
 
     @Override

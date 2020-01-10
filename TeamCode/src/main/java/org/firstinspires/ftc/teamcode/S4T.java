@@ -52,6 +52,10 @@ public class S4T extends LinearOpMode {
 
         waitForStart();
 
+        fR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         //robot.resetMotorEncoders();
 
         while (opModeIsActive()) {
