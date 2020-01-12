@@ -30,16 +30,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -68,17 +60,14 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="encoderbasedauto - red", group="encoderbasedauto")
-public class encoderbasedauto extends LinearOpMode {
+@Autonomous(name="potato - blue", group="potato")
+public class potatoblue extends LinearOpMode {
 
     /* Declare OpMode members. */
     OverflowHardware robot = new OverflowHardware();
     private ElapsedTime     runtime = new ElapsedTime();
 
-    private OpenCvInternalCamera phoneCam;
-    private SkyDetector skyDetector;
-
-    private int key = -1;
+    private int key = 1;
 
     @Override
     public void runOpMode() {
@@ -102,62 +91,29 @@ public class encoderbasedauto extends LinearOpMode {
         robot.intakeLock.setPosition(1);
 
         //robot.swivel.setPosition(0.37); //.4
-        robot.swivel.setPosition(0.05);
+        robot.swivel.setPosition(0.15);
         robot.gripper.setPosition(0);
-
-        //------------------------------------------------------------------------------------------
-        // CAMERA INITIALIZATION
-        //------------------------------------------------------------------------------------------
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-
-        phoneCam.openCameraDevice();
-
-        skyDetector = new SkyDetector();
-        phoneCam.setPipeline(skyDetector);
-
-        phoneCam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
-        phoneCam.setZoom(15);
-
-        //------------------------------------------------------------------------------------------
-
-        telemetry.addData("KEY CONFIRMED", true);
-        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        runtime.reset();
-
-        while (runtime.seconds() < 3) {
-            if (skyDetector.getScreenPosition() < 80 && skyDetector.getScreenPosition() > 10) {
-                key = 1;
-            } else if (skyDetector.getScreenPosition() >= 80 && skyDetector.getScreenPosition() <= 180) {
-                key = 2;
-            } else if (skyDetector.getScreenPosition() > 180) {
-                key = 3;
-            }
-
-            telemetry.addData("screen position", skyDetector.getScreenPosition());
-            telemetry.addData("Current Key", key);
-            telemetry.update();
-        }
-
-        robot.intakeLock.setPosition(0);
-        robot.gripper.setPosition(1);
+        //robot.intakeLock.setPosition(0);
+        //robot.gripper.setPosition(1);
 
         sleep(1000);
 
         if (key == 1) {
-            robot.swivel.setPosition(0.37);
+            //robot.swivel.setPosition(0.30);
             sleep(1000);
 
-            telemetryStrafe(0.35,1500,5);
-            telemetryDrive(0.45,-750,5);
-            telemetryStrafe(0.45,6000,5);
-            robot.intakeLeft.setPower(0.8);
-            robot.intakeRight.setPower(0.8);
+            /*telemetryStrafe(0.35,-1500,5);
+            sleep(150);
+            telemetryDrive(0.45,-200,5);
+            sleep(150);
+            telemetryStrafe(0.45,-5900,5);
+            sleep(150);
+            robot.intakeLeft.setPower(0.5);
+            robot.intakeRight.setPower(0.5);
             telemetryDrive(0.3,1250,5);
             sleep(750);
             robot.intakeLeft.setPower(0);
@@ -165,28 +121,31 @@ public class encoderbasedauto extends LinearOpMode {
             robot.swivel.setPosition(0.05);
             sleep(250);
             robot.gripper.setPosition(0);
-            telemetryStrafe(0.45,-2600,5);
-            //telemetryTurn(0.2,-30,2);
-            telemetryDrive(0.60,-14500,10);
+            telemetryStrafe(0.45,3050,5);
             sleep(250);
-            telemetryTurn(0.3,-2200,5);
-            telemetryDrive(0.3,-1625,5);
+            telemetryTurn(0.3,40,2);
+            telemetryDrive(0.60,-14200,10);
+            sleep(250);
+            telemetryTurn(0.3,2250,5);*/
+            telemetryStrafe(0.4,1500,5);
+            sleep(250);
+            telemetryDrive(0.3,-6000,5);
             robot.grabberLeft.setPosition(1);
             robot.grabberRight.setPosition(0);
             sleep(1000);
-            telemetryDrive(0.4,2500,5);
-            telemetryTurn(0.8,3425,5);
+            telemetryDrive(0.4,3600,5);
+            telemetryTurn(0.8,-3425,5);
             telemetryDrive(0.6,-2250,2);
-            robot.swivel.setPosition(1);
+            //robot.swivel.setPosition(1);
             sleep(1000);
             robot.gripper.setPosition(1);
             sleep(200);
-            robot.swivel.setPosition(0.05);
+            //robot.swivel.setPosition(0.05);
             robot.grabberLeft.setPosition(0);
             robot.grabberRight.setPosition(1);
             //telemetryStrafe(0.6,200,4);
-            telemetryStrafe(0.5,1250,3);
-            telemetryTurn(0.125,-25,2);
+            telemetryStrafe(0.5,-800,3);
+            telemetryTurn(0.125,25,2);
             telemetryDrive(0.3,7000,5);
         } else if (key == 2) {
             robot.swivel.setPosition(0.37);

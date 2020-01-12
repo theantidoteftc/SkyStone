@@ -64,7 +64,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="test", group="encoderbasedauto")
+@Autonomous(name="test", group="encoderbasedautored")
 public class test extends LinearOpMode {
 
     /* Declare OpMode members. */

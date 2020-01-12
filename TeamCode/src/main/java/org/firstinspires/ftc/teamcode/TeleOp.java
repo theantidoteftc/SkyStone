@@ -214,7 +214,7 @@ public class TeleOp extends OpMode //steve
         }
 
         if (gamepad2.dpad_up) {
-            swivel.setPosition(0.05);
+            swivel.setPosition(0.15);
             gripper.setPosition(0);
         }
         if (gamepad2.dpad_right) {
@@ -225,7 +225,7 @@ public class TeleOp extends OpMode //steve
             swivel.setPosition(.7); //0.88
         }
         if (gamepad2.dpad_left) {
-            swivel.setPosition(1);
+            swivel.setPosition(.85);
         }
 
         if (gamepad2.a) {
